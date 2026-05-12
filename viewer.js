@@ -44,10 +44,49 @@ function showFile(fileHandle) {
   fileHandle.getFile().then(function(file) {
     return file.text();
   }).then(function(text) {
-    document.getElementById('content').innerHTML = '<h3>' + fileHandle.name + '</h3><pre style="white-space: pre-wrap;">' + text + '</pre>';
+    var contentDiv = document.getElementById('content');
+
+    // 使用marked.js渲染Markdown
+    if (typeof marked !== 'undefined') {
+      var html = marked.parse(text);
+      contentDiv.innerHTML = '<div class="markdown-body">' + html + '</div>';
+    } else {
+      // 如果marked.js未加载，使用简单的渲染
+      var html = simpleMarkdownRender(text);
+      contentDiv.innerHTML = '<div class="markdown-body">' + html + '</div>';
+    }
   }).catch(function(err) {
     document.getElementById('content').innerHTML = '<p style="color: red;">错误: ' + err.message + '</p>';
   });
+}
+
+// 简单的Markdown渲染函数
+function simpleMarkdownRender(text) {
+  var html = text
+    // 标题
+    .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+    .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+    .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+    // 粗体和斜体
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // 行内代码
+    .replace(/`(.*?)`/g, '<code>$1</code>')
+    // 链接
+    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+    // 列表
+    .replace(/^\s*[-*]\s+(.*$)/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+    // 段落
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+
+  // 包装在段落中
+  if (!html.startsWith('<h') && !html.startsWith('<ul') && !html.startsWith('<p')) {
+    html = '<p>' + html + '</p>';
+  }
+
+  return html;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
