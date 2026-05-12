@@ -340,7 +340,7 @@ body {
 
 .tree-arrow-placeholder {
   flex-shrink: 0;
-  width: 0;
+  width: 16px;
 }
 
 /* 文件夹/文件图标 */
