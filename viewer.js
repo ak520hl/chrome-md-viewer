@@ -289,33 +289,23 @@ function addHeadingIds(html) {
 // 渲染TOC
 function renderTOC(headings) {
   var tocList = document.getElementById('toc-list');
-  var tocTree = document.getElementById('toc-tree');
 
   tocList.innerHTML = '';
-  tocTree.innerHTML = '';
 
   if (headings.length === 0) {
     tocList.innerHTML = '<p class="placeholder">没有标题</p>';
-    tocTree.innerHTML = '<p class="placeholder">没有标题</p>';
     return;
   }
 
-  var ul1 = document.createElement('ul');
-  ul1.className = 'toc-tree';
-
-  var ul2 = document.createElement('ul');
-  ul2.className = 'toc-tree';
+  var ul = document.createElement('ul');
+  ul.className = 'toc-tree';
 
   headings.forEach(function(heading) {
-    var li1 = createTOCItem(heading);
-    ul1.appendChild(li1);
-
-    var li2 = createTOCItem(heading);
-    ul2.appendChild(li2);
+    var li = createTOCItem(heading);
+    ul.appendChild(li);
   });
 
-  tocList.appendChild(ul1);
-  tocTree.appendChild(ul2);
+  tocList.appendChild(ul);
 }
 
 // 创建TOC项
