@@ -373,6 +373,31 @@ body {
   min-width: 0;
 }
 
+/* 进入目录按钮 */
+.navigate-btn {
+  flex-shrink: 0;
+  opacity: 0;
+  color: var(--color-text-tertiary);
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.file-item:hover .navigate-btn {
+  opacity: 1;
+}
+
+.navigate-btn:hover {
+  color: var(--color-accent);
+  background-color: var(--color-accent-subtle);
+}
+
+/* 返回上级按钮 */
+.parent-btn {
+  margin-left: auto;
+}
+
 /* ===== TOC ===== */
 .toc-list,
 .toc-tree {

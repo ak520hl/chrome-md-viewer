@@ -5,6 +5,7 @@
 // 状态管理
 var state = {
   currentDirectory: null,
+  directoryStack: [],
   currentFile: null,
   files: [],
   headings: [],
@@ -33,6 +34,9 @@ function initUI() {
 
   // 打开目录按钮
   document.getElementById('open-directory').addEventListener('click', openDirectory);
+
+  // 返回上级目录按钮
+  document.getElementById('parent-directory').addEventListener('click', navigateToParent);
 
   // 初始化拖动调整大小
   initResize();
@@ -105,13 +109,32 @@ function switchTab(tabName) {
 // 打开目录
 function openDirectory() {
   window.showDirectoryPicker().then(function(dir) {
+    state.directoryStack = [dir];
     state.currentDirectory = dir;
     loadDirectoryFiles(dir);
+    updateParentButton();
   }).catch(function(err) {
     if (err.name !== 'AbortError') {
       showError('打开目录失败: ' + err.message);
     }
   });
+}
+
+// 返回上级目录
+function navigateToParent() {
+  if (state.directoryStack.length <= 1) return;
+
+  state.directoryStack.pop();
+  var parentDir = state.directoryStack[state.directoryStack.length - 1];
+  state.currentDirectory = parentDir;
+  loadDirectoryFiles(parentDir);
+  updateParentButton();
+}
+
+// 更新返回上级按钮显示状态
+function updateParentButton() {
+  var parentBtn = document.getElementById('parent-directory');
+  parentBtn.style.display = state.directoryStack.length > 1 ? 'flex' : 'none';
 }
 
 // 加载目录文件
@@ -201,8 +224,9 @@ function createFileListItem(file) {
       ? '<span class="tree-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4"/></svg></span>'
       : '<span class="tree-arrow-placeholder"></span>';
     var folderHtml = '<span class="folder-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 3.5h12M1 3.5v8.5h12V3.5M4.5 3.5V2h5v1.5"/></svg></span>';
+    var navigateHtml = '<span class="navigate-btn" title="进入目录"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6h8M7 3l3 3-3 3"/></svg></span>';
 
-    row.innerHTML = arrowHtml + folderHtml + '<span class="file-name">' + file.name + '</span>';
+    row.innerHTML = arrowHtml + folderHtml + '<span class="file-name">' + file.name + '</span>' + navigateHtml;
     li.appendChild(row);
 
     // 创建子目录列表
@@ -218,11 +242,31 @@ function createFileListItem(file) {
 
       li.appendChild(childUl);
 
-      row.addEventListener('click', function(e) {
+      // 点击箭头或文件夹名称展开/折叠
+      var arrowEl = row.querySelector('.tree-arrow');
+      var nameEl = row.querySelector('.file-name');
+
+      if (arrowEl) {
+        arrowEl.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleTreeNode(li, childUl);
+        });
+      }
+
+      if (nameEl) {
+        nameEl.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleTreeNode(li, childUl);
+        });
+      }
+    }
+
+    // 点击进入按钮导航到子目录
+    var navigateBtn = row.querySelector('.navigate-btn');
+    if (navigateBtn) {
+      navigateBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        var isExpanded = childUl.style.display !== 'none';
-        childUl.style.display = isExpanded ? 'none' : 'block';
-        li.classList.toggle('expanded', !isExpanded);
+        navigateToDirectory(file);
       });
     }
   } else {
@@ -241,6 +285,23 @@ function createFileListItem(file) {
   }
 
   return li;
+}
+
+// 切换树节点展开/折叠
+function toggleTreeNode(node, childUl) {
+  var isExpanded = childUl.style.display !== 'none';
+  childUl.style.display = isExpanded ? 'none' : 'block';
+  node.classList.toggle('expanded', !isExpanded);
+}
+
+// 导航到子目录
+function navigateToDirectory(file) {
+  if (file.handle) {
+    state.directoryStack.push(file.handle);
+    state.currentDirectory = file.handle;
+    loadDirectoryFiles(file.handle);
+    updateParentButton();
+  }
 }
 
 // 打开文件
