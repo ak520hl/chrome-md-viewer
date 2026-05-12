@@ -188,15 +188,24 @@ function renderFileList(files) {
 // 创建文件列表项
 function createFileListItem(file) {
   var li = document.createElement('li');
-  li.className = 'file-item ' + file.type;
+  li.className = 'tree-node';
 
   if (file.type === 'directory') {
     var hasChildren = file.children && file.children.length > 0;
-    var arrowIcon = hasChildren ? '<span class="tree-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4"/></svg></span>' : '<span class="tree-arrow-placeholder"></span>';
-    var folderIcon = '<span class="folder-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 3.5h12M1 3.5v8.5h12V3.5M4.5 3.5V2h5v1.5"/></svg></span>';
 
-    li.innerHTML = arrowIcon + folderIcon + '<span class="file-name">' + file.name + '</span>';
+    // 创建目录行
+    var row = document.createElement('div');
+    row.className = 'file-item directory';
 
+    var arrowHtml = hasChildren
+      ? '<span class="tree-arrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4"/></svg></span>'
+      : '<span class="tree-arrow-placeholder"></span>';
+    var folderHtml = '<span class="folder-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M1 3.5h12M1 3.5v8.5h12V3.5M4.5 3.5V2h5v1.5"/></svg></span>';
+
+    row.innerHTML = arrowHtml + folderHtml + '<span class="file-name">' + file.name + '</span>';
+    li.appendChild(row);
+
+    // 创建子目录列表
     if (hasChildren) {
       var childUl = document.createElement('ul');
       childUl.className = 'file-tree-children';
@@ -209,7 +218,7 @@ function createFileListItem(file) {
 
       li.appendChild(childUl);
 
-      li.addEventListener('click', function(e) {
+      row.addEventListener('click', function(e) {
         e.stopPropagation();
         var isExpanded = childUl.style.display !== 'none';
         childUl.style.display = isExpanded ? 'none' : 'block';
@@ -217,10 +226,15 @@ function createFileListItem(file) {
       });
     }
   } else {
-    var fileIcon = '<span class="file-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 1h5.5L11 3.5V13H3V1z"/><path d="M8.5 1v2.5H11"/></svg></span>';
-    li.innerHTML = '<span class="tree-arrow-placeholder"></span>' + fileIcon + '<span class="file-name">' + file.name + '</span>';
+    // 创建文件行
+    var row = document.createElement('div');
+    row.className = 'file-item file';
 
-    li.addEventListener('click', function(e) {
+    var fileHtml = '<span class="file-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M3 1h5.5L11 3.5V13H3V1z"/><path d="M8.5 1v2.5H11"/></svg></span>';
+    row.innerHTML = '<span class="tree-arrow-placeholder"></span>' + fileHtml + '<span class="file-name">' + file.name + '</span>';
+    li.appendChild(row);
+
+    row.addEventListener('click', function(e) {
       e.stopPropagation();
       openFile(file);
     });

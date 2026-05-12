@@ -286,10 +286,16 @@ body {
   overflow: hidden;
 }
 
-.file-tree {
+.file-tree,
+.file-tree-children {
   list-style: none;
   width: 100%;
   padding: 0;
+  margin: 0;
+}
+
+.tree-node {
+  list-style: none;
 }
 
 .file-item {
@@ -300,7 +306,6 @@ body {
   align-items: center;
   gap: 2px;
   transition: background-color var(--transition-fast), color var(--transition-fast);
-  margin-bottom: 1px;
   color: var(--color-text-secondary);
   min-height: 26px;
 }
@@ -329,7 +334,7 @@ body {
   align-items: center;
 }
 
-.file-item.expanded .tree-arrow {
+.tree-node.expanded > .file-item .tree-arrow {
   transform: rotate(90deg);
 }
 
@@ -352,11 +357,11 @@ body {
   opacity: 0.7;
 }
 
-/* 子目录 */
+/* 子目录缩进 */
 .file-tree-children {
-  padding-left: 20px;
+  padding-left: 16px;
+  margin-left: 10px;
   border-left: 1px solid var(--color-border-subtle);
-  margin-left: 8px;
 }
 
 .file-name {
