@@ -328,10 +328,13 @@ body {
 /* 展开/折叠箭头 */
 .tree-arrow {
   flex-shrink: 0;
+  width: 12px;
+  height: 12px;
   color: var(--color-text-tertiary);
   transition: transform var(--transition-fast);
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .tree-node.expanded > .file-item .tree-arrow {
@@ -340,7 +343,8 @@ body {
 
 .tree-arrow-placeholder {
   flex-shrink: 0;
-  width: 16px;
+  width: 12px;
+  height: 12px;
 }
 
 /* 文件夹/文件图标 */
