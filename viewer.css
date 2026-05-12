@@ -266,25 +266,25 @@ body {
 .file-tree {
   list-style: none;
   width: 100%;
+  padding: 0;
 }
 
 .file-item {
-  padding: var(--space-sm) var(--space-md);
+  padding: 6px var(--space-md);
   cursor: pointer;
   border-radius: var(--radius-sm);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--space-sm);
-  transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
-  margin-bottom: 2px;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+  margin-bottom: 1px;
   color: var(--color-text-secondary);
-  min-height: 32px;
+  min-height: 28px;
 }
 
 .file-item:hover {
   background-color: var(--color-surface-hover);
   color: var(--color-text-primary);
-  transform: translateX(4px);
 }
 
 .file-item.active {
@@ -298,17 +298,22 @@ body {
 }
 
 .file-tree-children {
-  padding-left: var(--space-lg);
+  padding-left: 20px;
+  margin-left: 12px;
   border-left: 1px solid var(--color-border-subtle);
-  margin-left: var(--space-md);
+}
+
+.file-tree-children .file-tree-children {
+  margin-left: 11px;
 }
 
 .folder-icon,
 .file-icon {
-  font-size: 14px;
+  font-size: 12px;
   flex-shrink: 0;
-  opacity: 0.7;
-  margin-top: 2px;
+  opacity: 0.6;
+  width: 16px;
+  text-align: center;
 }
 
 .file-name {
