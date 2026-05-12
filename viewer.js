@@ -38,6 +38,9 @@ function initUI() {
   // 返回上级目录按钮
   document.getElementById('parent-directory').addEventListener('click', navigateToParent);
 
+  // 打开上级目录按钮
+  document.getElementById('open-parent').addEventListener('click', openParentDirectory);
+
   // 初始化拖动调整大小
   initResize();
 }
@@ -108,7 +111,12 @@ function switchTab(tabName) {
 
 // 打开目录
 function openDirectory() {
-  window.showDirectoryPicker().then(function(dir) {
+  var options = {};
+  if (state.currentDirectory) {
+    options.startIn = state.currentDirectory;
+  }
+
+  window.showDirectoryPicker(options).then(function(dir) {
     state.directoryStack = [dir];
     state.currentDirectory = dir;
     loadDirectoryFiles(dir);
@@ -131,10 +139,33 @@ function navigateToParent() {
   updateParentButton();
 }
 
+// 打开上级目录（文件系统层面的上级）
+function openParentDirectory() {
+  if (!state.currentDirectory) return;
+
+  // 使用 startIn 打开目录选择器，定位到当前目录
+  window.showDirectoryPicker({ startIn: state.currentDirectory }).then(function(dir) {
+    state.directoryStack = [dir];
+    state.currentDirectory = dir;
+    loadDirectoryFiles(dir);
+    updateParentButton();
+  }).catch(function(err) {
+    if (err.name !== 'AbortError') {
+      showError('打开目录失败: ' + err.message);
+    }
+  });
+}
+
 // 更新返回上级按钮显示状态
 function updateParentButton() {
   var parentBtn = document.getElementById('parent-directory');
+  var openParentBtn = document.getElementById('open-parent');
+
+  // 返回上级按钮：有导航历史时显示
   parentBtn.style.display = state.directoryStack.length > 1 ? 'flex' : 'none';
+
+  // 打开上级按钮：已选择目录时显示
+  openParentBtn.style.display = state.currentDirectory ? 'flex' : 'none';
 }
 
 // 加载目录文件
