@@ -263,7 +263,7 @@ function generateHeadingId(text, index) {
 // 为HTML中的标题添加ID
 function addHeadingIds(html) {
   var index = 0;
-  return html.replace(/<h([1-6])>(.*?)<\/h\1>/gi, function(match, level, text) {
+  return html.replace(/<h([1-6])(?:\s[^>]*)?>(.*?)<\/h\1>/gi, function(match, level, text) {
     var id = generateHeadingId(text, index);
     index++;
     return '<h' + level + ' id="' + id + '">' + text + '</h' + level + '>';
