@@ -84,9 +84,32 @@ body {
 /* ===== 容器布局 ===== */
 .container {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 280px auto 1fr;
   height: 100vh;
   overflow: hidden;
+}
+
+/* ===== 拖动条 ===== */
+.resize-handle {
+  width: 4px;
+  cursor: col-resize;
+  background-color: var(--color-border);
+  transition: background-color var(--transition-fast);
+  position: relative;
+}
+
+.resize-handle:hover,
+.resize-handle.active {
+  background-color: var(--color-accent);
+}
+
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4px;
+  right: -4px;
+  bottom: 0;
 }
 
 /* ===== 侧边栏 ===== */
@@ -715,7 +738,7 @@ body {
 /* ===== 响应式布局 ===== */
 @media (max-width: 1024px) {
   .container {
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 240px auto 1fr;
   }
 }
 
@@ -726,15 +749,19 @@ body {
   }
 
   .sidebar {
-    width: 100%;
+    width: 100% !important;
     max-height: 300px;
     border-right: none;
     border-bottom: 1px solid var(--color-border);
   }
 
   .sidebar.collapsed {
-    width: 100%;
+    width: 100% !important;
     max-height: 56px;
+  }
+
+  .resize-handle {
+    display: none;
   }
 
   #markdown-content {

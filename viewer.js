@@ -33,6 +33,51 @@ function initUI() {
 
   // 打开目录按钮
   document.getElementById('open-directory').addEventListener('click', openDirectory);
+
+  // 初始化拖动调整大小
+  initResize();
+}
+
+// 初始化拖动调整大小
+function initResize() {
+  var resizeHandle = document.getElementById('resize-handle');
+  var sidebar = document.getElementById('sidebar');
+  var container = document.querySelector('.container');
+  var isResizing = false;
+  var startX = 0;
+  var startWidth = 0;
+
+  resizeHandle.addEventListener('mousedown', function(e) {
+    isResizing = true;
+    startX = e.clientX;
+    startWidth = sidebar.offsetWidth;
+    resizeHandle.classList.add('active');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isResizing) return;
+
+    var width = startWidth + (e.clientX - startX);
+    var minWidth = 200;
+    var maxWidth = window.innerWidth * 0.5;
+
+    if (width < minWidth) width = minWidth;
+    if (width > maxWidth) width = maxWidth;
+
+    container.style.gridTemplateColumns = width + 'px auto 1fr';
+  });
+
+  document.addEventListener('mouseup', function() {
+    if (isResizing) {
+      isResizing = false;
+      resizeHandle.classList.remove('active');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+  });
 }
 
 // 切换侧边栏
