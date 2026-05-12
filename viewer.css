@@ -284,6 +284,7 @@ body {
 .file-item:hover {
   background-color: var(--color-surface-hover);
   color: var(--color-text-primary);
+  padding-left: calc(var(--space-md) + 4px);
 }
 
 .file-item.active {
@@ -335,6 +336,8 @@ body {
 .toc-item:hover {
   background-color: var(--color-surface-hover);
   color: var(--color-text-primary);
+  border-left: 2px solid var(--color-accent);
+  padding-left: calc(var(--space-sm) + 2px);
 }
 
 .toc-item.active {
