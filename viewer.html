@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Viewer</title>
+  <link rel="stylesheet" href="libs/github-markdown.css">
+  <link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+  <div class="container">
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <button id="toggle-sidebar" class="toggle-btn">☰</button>
+        <span class="sidebar-title">Markdown Viewer</span>
+      </div>
+      <div class="sidebar-tabs">
+        <button class="tab-btn active" data-tab="files">📁 文件列表</button>
+        <button class="tab-btn" data-tab="toc">📑 目录</button>
+      </div>
+      <div class="sidebar-content">
+        <div class="tab-panel active" id="files-panel">
+          <div id="file-list" class="file-list">
+            <p class="placeholder">点击"打开目录"按钮选择文件夹</p>
+          </div>
+        </div>
+        <div class="tab-panel" id="toc-panel">
+          <div id="toc-list" class="toc-list">
+            <p class="placeholder">打开Markdown文件后显示目录</p>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <button id="open-directory" class="primary-btn">打开目录</button>
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="content">
+      <div class="content-header">
+        <h1 id="current-file-name">未选择文件</h1>
+      </div>
+      <div id="markdown-content" class="markdown-body">
+        <p class="placeholder">请从左侧选择一个Markdown文件</p>
+      </div>
+    </main>
+
+    <!-- 右侧目录 -->
+    <aside class="toc-sidebar" id="toc-sidebar">
+      <div class="toc-header">
+        <h2>📑 目录</h2>
+      </div>
+      <div id="toc-tree" class="toc-tree">
+        <p class="placeholder">打开Markdown文件后显示目录</p>
+      </div>
+    </aside>
+  </div>
+
+  <script src="libs/marked.min.js"></script>
+  <script src="libs/highlight.min.js"></script>
+  <script src="file-system.js"></script>
+  <script src="markdown-parser.js"></script>
+  <script src="ui-components.js"></script>
+  <script src="viewer.js"></script>
+</body>
+</html>
