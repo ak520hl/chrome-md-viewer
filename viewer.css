@@ -275,7 +275,7 @@ body {
   display: flex;
   align-items: flex-start;
   gap: var(--space-sm);
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
   margin-bottom: 2px;
   color: var(--color-text-secondary);
   min-height: 32px;
@@ -284,7 +284,7 @@ body {
 .file-item:hover {
   background-color: var(--color-surface-hover);
   color: var(--color-text-primary);
-  padding-left: calc(var(--space-md) + 4px);
+  transform: translateX(4px);
 }
 
 .file-item.active {
@@ -330,16 +330,16 @@ body {
   padding: var(--space-xs) var(--space-sm);
   cursor: pointer;
   border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
   margin-bottom: 1px;
   color: var(--color-text-secondary);
+  border-left: 2px solid transparent;
 }
 
 .toc-item:hover {
   background-color: var(--color-surface-hover);
   color: var(--color-text-primary);
-  border-left: 2px solid var(--color-accent);
-  padding-left: calc(var(--space-sm) + 2px);
+  border-left-color: var(--color-accent);
 }
 
 .toc-item.active {
