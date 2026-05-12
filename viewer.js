@@ -1,5 +1,5 @@
 /**
- * Markdown Viewer 主逻辑
+ * Markdown Viewer - 极简优雅风格
  */
 
 // 状态管理
@@ -16,6 +16,7 @@ var state = {
 document.addEventListener('DOMContentLoaded', function() {
   initUI();
   loadState();
+  initScrollListener();
 });
 
 // 初始化UI
@@ -45,12 +46,10 @@ function toggleSidebar() {
 function switchTab(tabName) {
   state.activeTab = tabName;
 
-  // 更新Tab按钮状态
   document.querySelectorAll('.tab-btn').forEach(function(btn) {
     btn.classList.toggle('active', btn.dataset.tab === tabName);
   });
 
-  // 更新Tab面板显示
   document.querySelectorAll('.tab-panel').forEach(function(panel) {
     panel.classList.toggle('active', panel.id === tabName + '-panel');
   });
@@ -126,7 +125,7 @@ function renderFileList(files) {
   fileList.innerHTML = '';
 
   if (files.length === 0) {
-    fileList.innerHTML = '<p class="placeholder">目录中没有Markdown文件</p>';
+    fileList.innerHTML = '<p class="placeholder">目录中没有 Markdown 文件</p>';
     return;
   }
 
@@ -235,12 +234,12 @@ function extractHeadings(text) {
     var match = line.match(/^(#{1,6})\s+(.+)$/);
     if (match) {
       var level = match[1].length;
-      var text = match[2].trim();
-      var id = generateHeadingId(text, i);
+      var headingText = match[2].trim();
+      var id = generateHeadingId(headingText, i);
 
       headings.push({
         level: level,
-        text: text,
+        text: headingText,
         id: id,
         line: i
       });
@@ -273,12 +272,10 @@ function addHeadingIds(html) {
 
 // 渲染TOC
 function renderTOC(headings) {
-  // 渲染左侧TOC面板
   var tocList = document.getElementById('toc-list');
-  tocList.innerHTML = '';
-
-  // 渲染右侧TOC侧边栏
   var tocTree = document.getElementById('toc-tree');
+
+  tocList.innerHTML = '';
   tocTree.innerHTML = '';
 
   if (headings.length === 0) {
@@ -442,8 +439,3 @@ function updateTOCHighlight() {
     highlightHeading(currentHeading.id);
   }
 }
-
-// 页面加载完成后初始化滚动监听
-document.addEventListener('DOMContentLoaded', function() {
-  initScrollListener();
-});
