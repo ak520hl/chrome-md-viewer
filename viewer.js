@@ -200,24 +200,24 @@ function renderMarkdown(text) {
 
   // 使用marked.js渲染
   if (typeof marked !== 'undefined') {
-    // 配置marked.js使用自定义渲染器
-    var renderer = new marked.Renderer();
     var headings = [];
 
-    // 自定义标题渲染器 (marked v12 API)
-    renderer.heading = function(token) {
-      var text = token.text;
-      var level = token.depth;
-      var id = generateHeadingId(text, headings.length);
-      headings.push({
-        level: level,
-        text: text,
-        id: id
-      });
-      return '<h' + level + ' id="' + id + '">' + text + '</h' + level + '>';
-    };
+    // 配置marked.js
+    marked.use({
+      renderer: {
+        heading: function(text, level) {
+          var id = generateHeadingId(text, headings.length);
+          headings.push({
+            level: level,
+            text: text,
+            id: id
+          });
+          return '<h' + level + ' id="' + id + '">' + text + '</h' + level + '>';
+        }
+      }
+    });
 
-    var html = marked.parse(text, { renderer: renderer });
+    var html = marked.parse(text);
     contentDiv.innerHTML = html;
     state.headings = headings;
   } else {
