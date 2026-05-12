@@ -259,10 +259,12 @@ body {
 /* ===== 文件列表 ===== */
 .file-list {
   font-size: 13px;
+  overflow: hidden;
 }
 
 .file-tree {
   list-style: none;
+  width: 100%;
 }
 
 .file-item {
@@ -270,11 +272,12 @@ body {
   cursor: pointer;
   border-radius: var(--radius-sm);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-sm);
   transition: all var(--transition-fast);
   margin-bottom: 2px;
   color: var(--color-text-secondary);
+  min-height: 32px;
 }
 
 .file-item:hover {
@@ -303,12 +306,20 @@ body {
   font-size: 14px;
   flex-shrink: 0;
   opacity: 0.7;
+  margin-top: 2px;
+}
+
+.file-name {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  line-height: 1.4;
 }
 
 /* ===== TOC ===== */
 .toc-list,
 .toc-tree {
   font-size: 13px;
+  width: 100%;
 }
 
 .toc-item {
@@ -361,6 +372,8 @@ body {
   text-decoration: none;
   display: block;
   line-height: 1.4;
+  word-break: break-all;
+  overflow-wrap: break-word;
 }
 
 /* ===== 主内容区 ===== */
