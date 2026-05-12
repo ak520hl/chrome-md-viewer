@@ -23,9 +23,9 @@
   --color-text-inverse: #fafaf8;
 
   /* 强调色 */
-  --color-accent: #2563eb;
-  --color-accent-hover: #1d4ed8;
-  --color-accent-subtle: #eff6ff;
+  --color-accent: #7c3aed;
+  --color-accent-hover: #6d28d9;
+  --color-accent-subtle: #f5f3ff;
 
   /* 状态色 */
   --color-success: #059669;
