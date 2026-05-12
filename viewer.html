@@ -21,13 +21,12 @@
 
     .container {
       display: flex;
-      height: 400px;
-      width: 600px;
+      height: 100vh;
       overflow: hidden;
     }
 
     .sidebar {
-      width: 200px;
+      width: 250px;
       background-color: #f6f8fa;
       border-right: 1px solid #d0d7de;
       display: flex;
@@ -35,20 +34,22 @@
     }
 
     .sidebar-header {
-      padding: 12px;
+      padding: 16px;
       border-bottom: 1px solid #d0d7de;
       font-weight: 600;
+      font-size: 18px;
     }
 
     .sidebar-content {
       flex: 1;
       overflow-y: auto;
-      padding: 12px;
+      padding: 16px;
     }
 
     .content {
       flex: 1;
-      padding: 20px;
+      padding: 24px;
+      overflow-y: auto;
     }
 
     .placeholder {
@@ -60,18 +61,76 @@
 
     .primary-btn {
       width: 100%;
-      padding: 8px 16px;
+      padding: 12px 20px;
       background-color: #0969da;
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 500;
       cursor: pointer;
+      margin-top: 20px;
     }
 
     .primary-btn:hover {
       background-color: #0860ca;
+    }
+
+    .file-list {
+      margin-top: 20px;
+    }
+
+    .file-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .file-item:hover {
+      background-color: #e1e4e8;
+    }
+
+    .file-icon {
+      font-size: 16px;
+    }
+
+    .markdown-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .markdown-content h1,
+    .markdown-content h2,
+    .markdown-content h3 {
+      margin-top: 24px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .markdown-content p {
+      margin-bottom: 16px;
+    }
+
+    .markdown-content code {
+      padding: 0.2em 0.4em;
+      background-color: rgba(175, 184, 193, 0.2);
+      border-radius: 6px;
+    }
+
+    .markdown-content pre {
+      padding: 16px;
+      background-color: #f6f8fa;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin-bottom: 16px;
+    }
+
+    .markdown-content pre code {
+      padding: 0;
+      background-color: transparent;
     }
   </style>
 </head>
@@ -80,12 +139,16 @@
     <aside class="sidebar">
       <div class="sidebar-header">Markdown Viewer</div>
       <div class="sidebar-content">
-        <p class="placeholder">点击下方按钮选择文件夹</p>
         <button id="open-directory" class="primary-btn">打开目录</button>
+        <div id="file-list" class="file-list">
+          <p class="placeholder">点击上方按钮选择文件夹</p>
+        </div>
       </div>
     </aside>
     <main class="content">
-      <p class="placeholder">请选择一个Markdown文件</p>
+      <div id="markdown-content" class="markdown-content">
+        <p class="placeholder">请选择一个Markdown文件</p>
+      </div>
     </main>
   </div>
 
@@ -96,6 +159,9 @@
       console.log('DOM 加载完成');
 
       const openBtn = document.getElementById('open-directory');
+      const fileList = document.getElementById('file-list');
+      const markdownContent = document.getElementById('markdown-content');
+
       if (openBtn) {
         openBtn.addEventListener('click', async function() {
           console.log('点击打开目录按钮');
@@ -104,15 +170,58 @@
             const directoryHandle = await window.showDirectoryPicker();
             console.log('选择的目录:', directoryHandle.name);
 
+            fileList.innerHTML = '';
             const files = [];
+
             for await (const entry of directoryHandle.values()) {
               if (entry.kind === 'file' && entry.name.endsWith('.md')) {
-                files.push(entry.name);
+                files.push({
+                  name: entry.name,
+                  handle: entry
+                });
               }
             }
 
-            console.log('找到的Markdown文件:', files);
-            alert('找到 ' + files.length + ' 个Markdown文件:\n' + files.join('\n'));
+            console.log('找到的Markdown文件:', files.map(f => f.name));
+
+            if (files.length === 0) {
+              fileList.innerHTML = '<p class="placeholder">目录中没有Markdown文件</p>';
+              return;
+            }
+
+            files.forEach(function(file) {
+              const fileItem = document.createElement('div');
+              fileItem.className = 'file-item';
+              fileItem.innerHTML = '<span class="file-icon">📄</span><span>' + file.name + '</span>';
+
+              fileItem.addEventListener('click', async function() {
+                console.log('点击文件:', file.name);
+
+                try {
+                  const fileData = await file.handle.getFile();
+                  const text = await fileData.text();
+                  console.log('文件内容长度:', text.length);
+
+                  // 简单的Markdown渲染
+                  let html = text
+                    .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                    .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                    .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>')
+                    .replace(/\n/g, '<br>');
+
+                  markdownContent.innerHTML = html;
+                } catch (error) {
+                  console.error('读取文件错误:', error);
+                  markdownContent.innerHTML = '<p style="color: red;">读取文件失败: ' + error.message + '</p>';
+                }
+              });
+
+              fileList.appendChild(fileItem);
+            });
+
           } catch (error) {
             console.error('错误:', error);
             if (error.name !== 'AbortError') {
