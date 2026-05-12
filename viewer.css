@@ -701,7 +701,7 @@ body {
 
 .markdown-body table th {
   font-weight: 600;
-  background-color: var(--color-surface-hover);
+  background-color: var(--color-accent-subtle);
   color: var(--color-text-primary);
 }
 
