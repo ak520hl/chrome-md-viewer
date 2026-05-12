@@ -343,6 +343,7 @@ body {
 .toc-item.active {
   background-color: var(--color-accent-subtle);
   color: var(--color-accent);
+  border-left: 2px solid var(--color-accent);
 }
 
 .toc-item.level-1 {
