@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Markdown Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      width: 200px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #0969da;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0860ca;
+    }
+  </style>
+</head>
+<body>
+  <button id="openBtn">打开 Markdown Viewer</button>
+
+  <script>
+    document.getElementById('openBtn').onclick = function() {
+      chrome.tabs.create({ url: 'viewer.html' });
+    };
+  </script>
+</body>
+</html>
