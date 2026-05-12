@@ -26,11 +26,6 @@
 </head>
 <body>
   <button id="openBtn">打开 Markdown Viewer</button>
-
-  <script>
-    document.getElementById('openBtn').onclick = function() {
-      chrome.tabs.create({ url: 'viewer.html' });
-    };
-  </script>
+  <script src="popup.js"></script>
 </body>
 </html>

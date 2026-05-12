@@ -1,85 +1,56 @@
-/**
- * 主界面逻辑
- * 初始化应用，协调各组件
- */
+function openDir() {
+  document.getElementById('status').textContent = '正在打开...';
 
-class Viewer {
-  constructor() {
-    this.init();
-  }
+  window.showDirectoryPicker().then(function(dir) {
+    document.getElementById('status').textContent = '目录: ' + dir.name;
 
-  /**
-   * 初始化应用
-   */
-  init() {
-    // 等待DOM加载完成
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => this.onReady());
+    var filesDiv = document.getElementById('files');
+    filesDiv.innerHTML = '<h3>Markdown文件:</h3>';
+
+    return readDir(dir, filesDiv);
+  }).catch(function(err) {
+    if (err.name !== 'AbortError') {
+      document.getElementById('status').textContent = '错误: ' + err.message;
     } else {
-      this.onReady();
+      document.getElementById('status').textContent = '已取消';
     }
-  }
-
-  /**
-   * DOM就绪后的初始化
-   */
-  onReady() {
-    console.log('Markdown Viewer 初始化中...');
-
-    // 初始化UI组件
-    window.uiComponents.init();
-
-    // 初始化滚动监听
-    this.initScrollListener();
-
-    console.log('Markdown Viewer 初始化完成');
-  }
-
-  /**
-   * 初始化滚动监听
-   * 用于TOC高亮跟随
-   */
-  initScrollListener() {
-    const content = document.getElementById('markdown-content');
-    if (!content) return;
-
-    let scrollTimeout;
-
-    content.addEventListener('scroll', () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        this.updateTOCHighlight();
-      }, 100);
-    });
-  }
-
-  /**
-   * 更新TOC高亮
-   */
-  updateTOCHighlight() {
-    const content = document.getElementById('markdown-content');
-    if (!content) return;
-
-    const headings = content.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    let currentHeading = null;
-
-    // 找到当前可视区域的标题
-    headings.forEach(heading => {
-      const rect = heading.getBoundingClientRect();
-      const contentRect = content.getBoundingClientRect();
-
-      if (rect.top >= contentRect.top && rect.top <= contentRect.bottom) {
-        currentHeading = heading;
-      }
-    });
-
-    // 更新TOC高亮
-    if (currentHeading) {
-      const headingId = currentHeading.id;
-      window.uiComponents.highlightHeading(headingId);
-    }
-  }
+  });
 }
 
-// 启动应用
-new Viewer();
+function readDir(dir, filesDiv) {
+  var entries = dir.values();
+
+  function next() {
+    return entries.next().then(function(result) {
+      if (result.done) return;
+
+      var entry = result.value;
+      if (entry.kind === 'file' && entry.name.endsWith('.md')) {
+        var div = document.createElement('div');
+        div.style.cssText = 'padding: 8px; margin: 4px 0; background: #f0f0f0; cursor: pointer; border-radius: 4px;';
+        div.textContent = entry.name;
+        div.onclick = function() { showFile(entry); };
+        filesDiv.appendChild(div);
+      }
+
+      return next();
+    });
+  }
+
+  return next();
+}
+
+function showFile(fileHandle) {
+  fileHandle.getFile().then(function(file) {
+    return file.text();
+  }).then(function(text) {
+    document.getElementById('content').innerHTML = '<h3>' + fileHandle.name + '</h3><pre style="white-space: pre-wrap;">' + text + '</pre>';
+  }).catch(function(err) {
+    document.getElementById('content').innerHTML = '<p style="color: red;">错误: ' + err.message + '</p>';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('openBtn').addEventListener('click', openDir);
+  console.log('页面加载完成');
+});
