@@ -198,21 +198,37 @@ function openFile(file) {
 function renderMarkdown(text) {
   var contentDiv = document.getElementById('markdown-content');
 
-  // 提取标题
-  var headings = extractHeadings(text);
-  state.headings = headings;
-
   // 使用marked.js渲染
   if (typeof marked !== 'undefined') {
-    var html = marked.parse(text);
-    contentDiv.innerHTML = addHeadingIds(html);
+    // 配置marked.js使用自定义渲染器
+    var renderer = new marked.Renderer();
+    var headings = [];
+
+    // 自定义标题渲染器 (marked v12 API)
+    renderer.heading = function(token) {
+      var text = token.text;
+      var level = token.depth;
+      var id = generateHeadingId(text, headings.length);
+      headings.push({
+        level: level,
+        text: text,
+        id: id
+      });
+      return '<h' + level + ' id="' + id + '">' + text + '</h' + level + '>';
+    };
+
+    var html = marked.parse(text, { renderer: renderer });
+    contentDiv.innerHTML = html;
+    state.headings = headings;
   } else {
+    var headings = extractHeadings(text);
+    state.headings = headings;
     var html = simpleMarkdownRender(text);
     contentDiv.innerHTML = addHeadingIds(html);
   }
 
   // 渲染TOC
-  renderTOC(headings);
+  renderTOC(state.headings);
 }
 
 // 提取标题
