@@ -769,6 +769,18 @@ body {
   color: white;
 }
 
+/* ===== Mermaid图表 ===== */
+.mermaid {
+  margin: var(--space-lg) 0;
+  text-align: center;
+  overflow-x: auto;
+}
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
 /* ===== 响应式布局 ===== */
 @media (max-width: 1024px) {
   .container {

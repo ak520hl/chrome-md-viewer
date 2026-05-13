@@ -385,6 +385,12 @@ function renderMarkdown(text) {
             id: id
           });
           return '<h' + level + ' id="' + id + '">' + text + '</h' + level + '>';
+        },
+        code: function(code, language) {
+          if (language === 'mermaid') {
+            return '<div class="mermaid">' + code + '</div>';
+          }
+          return '<pre><code class="language-' + (language || '') + '">' + code + '</code></pre>';
         }
       }
     });
@@ -401,6 +407,29 @@ function renderMarkdown(text) {
 
   // 渲染TOC
   renderTOC(state.headings);
+
+  // 渲染Mermaid图表
+  renderMermaid();
+}
+
+// 渲染Mermaid图表
+function renderMermaid() {
+  if (typeof mermaid !== 'undefined') {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'default',
+      securityLevel: 'loose'
+    });
+
+    var mermaidElements = document.querySelectorAll('.mermaid');
+    if (mermaidElements.length > 0) {
+      mermaid.run({
+        nodes: mermaidElements
+      }).catch(function(err) {
+        console.error('Mermaid渲染失败:', err);
+      });
+    }
+  }
 }
 
 // 提取标题
