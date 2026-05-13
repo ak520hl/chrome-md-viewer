@@ -428,6 +428,7 @@ var mermaidQueue = [];
 function renderMermaid() {
   if (typeof mermaid === 'undefined') {
     console.error('Mermaid库未加载');
+    renderMermaidFallback();
     return;
   }
 
@@ -439,8 +440,7 @@ function renderMermaid() {
     mermaid.initialize({
       startOnLoad: false,
       theme: 'default',
-      securityLevel: 'loose',
-      logLevel: 0
+      securityLevel: 'loose'
     });
   } catch (err) {
     console.error('Mermaid初始化失败:', err);
@@ -453,34 +453,49 @@ function renderMermaid() {
       return;
     }
 
-    console.log('渲染Mermaid:', item.id);
-    console.log('代码内容:', item.code);
-
-    // 清理代码
     var cleanCode = item.code.trim();
+    var renderId = 'mermaid-svg-' + Date.now() + '-' + index;
 
-    // 使用mermaid.render API
-    var renderId = item.id + '-svg-' + index;
-
-    mermaid.render(renderId, cleanCode).then(function(result) {
-      console.log('Mermaid渲染成功:', item.id);
-      element.innerHTML = result.svg;
-    }).catch(function(err) {
-      console.error('Mermaid渲染失败:', err);
-      // 尝试获取错误信息
-      var errorMsg = '未知错误';
-      if (err.message) {
-        errorMsg = err.message;
-      } else if (typeof err === 'string') {
-        errorMsg = err;
-      } else if (err.str) {
-        errorMsg = err.str;
+    // 尝试使用mermaidAPI
+    try {
+      if (mermaid.mermaidAPI && mermaid.mermaidAPI.render) {
+        mermaid.mermaidAPI.render(renderId, cleanCode, function(svgCode) {
+          element.innerHTML = svgCode;
+        });
+      } else {
+        mermaid.render(renderId, cleanCode).then(function(result) {
+          element.innerHTML = result.svg;
+        }).catch(function(err) {
+          console.error('Mermaid渲染失败:', err);
+          var errorMsg = err.message || err.str || '语法错误';
+          element.innerHTML = '<pre class="mermaid-error">Mermaid ' + errorMsg + ':\n' + cleanCode + '</pre>';
+        });
       }
-      element.innerHTML = '<pre class="mermaid-error">Mermaid语法错误:\n' + errorMsg + '\n\n代码:\n' + cleanCode + '</pre>';
-    });
+    } catch (err) {
+      console.error('Mermaid渲染异常:', err);
+      element.innerHTML = '<pre class="mermaid-error">Mermaid渲染异常: ' + (err.message || err) + ':\n' + cleanCode + '</pre>';
+    }
   });
 
   mermaidQueue = [];
+}
+
+// Mermaid降级方案
+function renderMermaidFallback() {
+  mermaidQueue.forEach(function(item) {
+    var element = document.getElementById(item.id);
+    if (element) {
+      element.innerHTML = '<pre class="mermaid-code">' + escapeHtml(item.code.trim()) + '</pre>';
+    }
+  });
+  mermaidQueue = [];
+}
+
+// HTML转义
+function escapeHtml(text) {
+  var div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 // 提取标题

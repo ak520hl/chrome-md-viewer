@@ -793,6 +793,18 @@ body {
   white-space: pre-wrap;
 }
 
+.mermaid-code {
+  background-color: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
 /* ===== 响应式布局 ===== */
 @media (max-width: 1024px) {
   .container {
