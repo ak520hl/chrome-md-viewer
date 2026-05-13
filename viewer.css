@@ -781,6 +781,18 @@ body {
   height: auto;
 }
 
+.mermaid-error {
+  color: var(--color-error);
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
 /* ===== 响应式布局 ===== */
 @media (max-width: 1024px) {
   .container {

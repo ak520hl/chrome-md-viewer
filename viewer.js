@@ -386,14 +386,23 @@ function renderMarkdown(text) {
           });
           return '<h' + level + ' id="' + id + '">' + text + '</h' + level + '>';
         },
-        code: function(code, language) {
+        code: function(token) {
+          var code = token.text;
+          var language = token.lang;
+
           if (language === 'mermaid') {
-            return '<div class="mermaid">' + code + '</div>';
+            // 保存原始代码用于mermaid渲染
+            var id = 'mermaid-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+            mermaidQueue.push({ id: id, code: code });
+            return '<div class="mermaid" id="' + id + '"></div>';
           }
           return '<pre><code class="language-' + (language || '') + '">' + code + '</code></pre>';
         }
       }
     });
+
+    // 重置mermaid队列
+    mermaidQueue = [];
 
     var html = marked.parse(text);
     contentDiv.innerHTML = html;
@@ -412,24 +421,37 @@ function renderMarkdown(text) {
   renderMermaid();
 }
 
+// Mermaid渲染队列
+var mermaidQueue = [];
+
 // 渲染Mermaid图表
 function renderMermaid() {
-  if (typeof mermaid !== 'undefined') {
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'default',
-      securityLevel: 'loose'
-    });
+  if (typeof mermaid === 'undefined' || mermaidQueue.length === 0) return;
 
-    var mermaidElements = document.querySelectorAll('.mermaid');
-    if (mermaidElements.length > 0) {
-      mermaid.run({
-        nodes: mermaidElements
-      }).catch(function(err) {
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose'
+  });
+
+  mermaidQueue.forEach(function(item) {
+    var element = document.getElementById(item.id);
+    if (element) {
+      try {
+        mermaid.render(item.id + '-svg', item.code).then(function(result) {
+          element.innerHTML = result.svg;
+        }).catch(function(err) {
+          console.error('Mermaid渲染失败:', err);
+          element.innerHTML = '<pre class="mermaid-error">' + item.code + '</pre>';
+        });
+      } catch (err) {
         console.error('Mermaid渲染失败:', err);
-      });
+        element.innerHTML = '<pre class="mermaid-error">' + item.code + '</pre>';
+      }
     }
-  }
+  });
+
+  mermaidQueue = [];
 }
 
 // 提取标题
