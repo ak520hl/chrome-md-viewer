@@ -459,14 +459,27 @@ function renderMermaid() {
     mermaid.initialize({
       startOnLoad: true,
       theme: 'base',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis',
+        padding: 12,
+        nodeSpacing: 30,
+        rankSpacing: 50
+      },
+      sequence: {
+        useMaxWidth: true,
+        actorMargin: 50,
+        messageMargin: 35
+      },
       themeVariables: {
         primaryColor: '#f5f3ff',
         primaryTextColor: '#1a1a18',
         primaryBorderColor: '#7c3aed',
-        lineColor: '#7c3aed',
+        lineColor: '#9b9b95',
         secondaryColor: '#ede9fe',
         tertiaryColor: '#fafaf8',
-        fontSize: '14px',
+        fontSize: '13px',
         fontFamily: 'IBM Plex Sans, sans-serif',
         nodeBorder: '#7c3aed',
         mainBkg: '#f5f3ff',

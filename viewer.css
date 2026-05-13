@@ -774,11 +774,35 @@ body {
   margin: var(--space-lg) 0;
   text-align: center;
   overflow-x: auto;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
 }
 
 .mermaid svg {
   max-width: 100%;
   height: auto;
+}
+
+/* 连线样式优化 */
+.mermaid .edgePath .path {
+  stroke-width: 1.5px;
+}
+
+/* 节点圆角 */
+.mermaid .node rect,
+.mermaid .node polygon,
+.mermaid .node circle {
+  rx: 8;
+  ry: 8;
+}
+
+/* 标签背景 */
+.mermaid .edgeLabel {
+  background-color: var(--color-surface);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
 }
 
 .mermaid-error {
