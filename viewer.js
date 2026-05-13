@@ -458,7 +458,36 @@ function renderMermaid() {
   try {
     mermaid.initialize({
       startOnLoad: true,
-      theme: 'default',
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#f5f3ff',
+        primaryTextColor: '#1a1a18',
+        primaryBorderColor: '#7c3aed',
+        lineColor: '#7c3aed',
+        secondaryColor: '#ede9fe',
+        tertiaryColor: '#fafaf8',
+        fontSize: '14px',
+        fontFamily: 'IBM Plex Sans, sans-serif',
+        nodeBorder: '#7c3aed',
+        mainBkg: '#f5f3ff',
+        nodeTextColor: '#1a1a18',
+        edgeLabelBackground: '#ffffff',
+        clusterBkg: '#fafaf8',
+        clusterBorder: '#e8e8e4',
+        titleColor: '#1a1a18',
+        actorTextColor: '#1a1a18',
+        actorBorder: '#7c3aed',
+        actorBkg: '#f5f3ff',
+        signalColor: '#1a1a18',
+        signalTextColor: '#1a1a18',
+        labelBoxBkgColor: '#f5f3ff',
+        labelBoxBorderColor: '#7c3aed',
+        labelTextColor: '#1a1a18',
+        loopTextColor: '#1a1a18',
+        activationBorderColor: '#7c3aed',
+        activationBkgColor: '#ede9fe',
+        sequenceNumberColor: '#ffffff'
+      },
       securityLevel: 'loose'
     });
     mermaid.run();
