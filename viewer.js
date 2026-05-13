@@ -10,7 +10,9 @@ var state = {
   files: [],
   headings: [],
   isSidebarCollapsed: false,
-  activeTab: 'files'
+  activeTab: 'files',
+  themeColor: 'purple',
+  themeMode: 'light'
 };
 
 // 初始化
@@ -43,6 +45,9 @@ function initUI() {
 
   // 返回顶部按钮
   initBackToTop();
+
+  // 初始化主题切换
+  initTheme();
 
   // 初始化拖动调整大小
   initResize();
@@ -708,13 +713,15 @@ function simpleMarkdownRender(text) {
 function saveState() {
   chrome.storage.local.set({
     isSidebarCollapsed: state.isSidebarCollapsed,
-    activeTab: state.activeTab
+    activeTab: state.activeTab,
+    themeColor: state.themeColor,
+    themeMode: state.themeMode
   });
 }
 
 // 加载状态
 function loadState() {
-  chrome.storage.local.get(['isSidebarCollapsed', 'activeTab'], function(result) {
+  chrome.storage.local.get(['isSidebarCollapsed', 'activeTab', 'themeColor', 'themeMode'], function(result) {
     if (result.isSidebarCollapsed !== undefined) {
       state.isSidebarCollapsed = result.isSidebarCollapsed;
       document.getElementById('sidebar').classList.toggle('collapsed', state.isSidebarCollapsed);
@@ -723,7 +730,76 @@ function loadState() {
     if (result.activeTab) {
       switchTab(result.activeTab);
     }
+
+    if (result.themeColor) {
+      state.themeColor = result.themeColor;
+    }
+    if (result.themeMode) {
+      state.themeMode = result.themeMode;
+    }
+    applyTheme();
   });
+}
+
+// 初始化主题切换
+function initTheme() {
+  var toggleBtn = document.getElementById('theme-toggle-btn');
+  var panel = document.getElementById('theme-panel');
+
+  // 切换面板显示
+  toggleBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    panel.classList.toggle('visible');
+  });
+
+  // 点击外部关闭面板
+  document.addEventListener('click', function(e) {
+    if (!panel.contains(e.target) && e.target !== toggleBtn) {
+      panel.classList.remove('visible');
+    }
+  });
+
+  // 明暗切换
+  document.querySelectorAll('.mode-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      state.themeMode = this.dataset.mode;
+      applyTheme();
+      saveState();
+    });
+  });
+
+  // 配色切换
+  document.querySelectorAll('.color-dot').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      state.themeColor = this.dataset.color;
+      applyTheme();
+      saveState();
+    });
+  });
+}
+
+// 应用主题
+function applyTheme() {
+  var root = document.documentElement;
+  root.setAttribute('data-mode', state.themeMode);
+  root.setAttribute('data-color', state.themeColor);
+
+  // 更新按钮激活状态
+  document.querySelectorAll('.mode-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.mode === state.themeMode);
+  });
+
+  document.querySelectorAll('.color-dot').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.color === state.themeColor);
+  });
+
+  // 更新切换图标
+  var toggleBtn = document.getElementById('theme-toggle-btn');
+  if (state.themeMode === 'dark') {
+    toggleBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 8.5A6 6 0 116.5 2 5 5 0 0014 8.5z"/></svg>';
+  } else {
+    toggleBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>';
+  }
 }
 
 // 初始化滚动监听

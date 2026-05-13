@@ -9,29 +9,6 @@
   --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'IBM Plex Mono', 'Fira Code', monospace;
 
-  /* 颜色 - 温暖的灰调 */
-  --color-bg: #fafaf8;
-  --color-surface: #ffffff;
-  --color-surface-hover: #f5f5f3;
-  --color-border: #e8e8e4;
-  --color-border-subtle: #f0f0ec;
-
-  /* 文本颜色 */
-  --color-text-primary: #1a1a18;
-  --color-text-secondary: #6b6b66;
-  --color-text-tertiary: #9b9b95;
-  --color-text-inverse: #fafaf8;
-
-  /* 强调色 */
-  --color-accent: #7c3aed;
-  --color-accent-hover: #6d28d9;
-  --color-accent-subtle: #f5f3ff;
-
-  /* 状态色 */
-  --color-success: #059669;
-  --color-warning: #d97706;
-  --color-error: #dc2626;
-
   /* 间距 */
   --space-xs: 4px;
   --space-sm: 8px;
@@ -46,16 +23,110 @@
   --radius-md: 12px;
   --radius-lg: 16px;
 
-  /* 阴影 */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 4px 12px rgba(124, 58, 237, 0.15);
-
   /* 过渡 */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== 配色方案 ===== */
+
+/* 紫色（默认） */
+:root, [data-color="purple"] {
+  --color-accent: #7c3aed;
+  --color-accent-hover: #6d28d9;
+  --color-accent-subtle: #f5f3ff;
+}
+
+/* 蓝色 */
+[data-color="blue"] {
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-subtle: #eff6ff;
+}
+
+/* 绿色 */
+[data-color="green"] {
+  --color-accent: #059669;
+  --color-accent-hover: #047857;
+  --color-accent-subtle: #ecfdf5;
+}
+
+/* 橙色 */
+[data-color="orange"] {
+  --color-accent: #ea580c;
+  --color-accent-hover: #c2410c;
+  --color-accent-subtle: #fff7ed;
+}
+
+/* ===== 明亮模式 ===== */
+:root, [data-mode="light"] {
+  --color-bg: #fafaf8;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f5f5f3;
+  --color-border: #e8e8e4;
+  --color-border-subtle: #f0f0ec;
+  --color-text-primary: #1a1a18;
+  --color-text-secondary: #6b6b66;
+  --color-text-tertiary: #9b9b95;
+  --color-text-inverse: #fafaf8;
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 4px 12px rgba(124, 58, 237, 0.15);
+  --mermaid-bg: #ffffff;
+  --mermaid-border: #e8e8e4;
+  --mermaid-node-text: #1a1a18;
+  --mermaid-line: #9b9b95;
+}
+
+/* ===== 暗色模式 ===== */
+[data-mode="dark"] {
+  --color-bg: #1a1a2e;
+  --color-surface: #252540;
+  --color-surface-hover: #2d2d4a;
+  --color-border: #3a3a5c;
+  --color-border-subtle: #30304e;
+  --color-text-primary: #e0e0e8;
+  --color-text-secondary: #a0a0b8;
+  --color-text-tertiary: #707090;
+  --color-text-inverse: #1a1a2e;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-hover: 0 4px 12px rgba(124, 58, 237, 0.25);
+  --mermaid-bg: #252540;
+  --mermaid-border: #3a3a5c;
+  --mermaid-node-text: #e0e0e8;
+  --mermaid-line: #707090;
+}
+
+[data-mode="dark"] .markdown-body pre {
+  background-color: #16162a;
+}
+
+[data-mode="dark"] .markdown-body code {
+  background-color: #2d2d4a;
+  color: #e0e0e8;
+}
+
+[data-mode="dark"] .markdown-body table th {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-border);
+}
+
+[data-mode="dark"] .markdown-body table td {
+  border-color: var(--color-border);
+}
+
+[data-mode="dark"] .markdown-body table tr:nth-child(even) {
+  background-color: var(--color-surface-hover);
 }
 
 /* ===== 全局重置 ===== */
@@ -491,6 +562,116 @@ body {
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
   letter-spacing: -0.01em;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== 主题切换器 ===== */
+.theme-switcher {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.theme-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity var(--transition-fast), visibility var(--transition-fast), transform var(--transition-fast);
+  min-width: 180px;
+}
+
+.theme-panel.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.theme-panel-section {
+  margin-bottom: var(--space-md);
+}
+
+.theme-panel-section:last-child {
+  margin-bottom: 0;
+}
+
+.theme-panel-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+}
+
+.theme-mode-toggle {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.mode-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mode-btn:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.mode-btn.active {
+  background-color: var(--color-accent-subtle);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.theme-colors {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.color-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background-color: var(--dot-color);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.color-dot:hover {
+  transform: scale(1.15);
+}
+
+.color-dot.active {
+  border-color: var(--color-text-primary);
+  box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-text-tertiary);
 }
 
 #markdown-content {
