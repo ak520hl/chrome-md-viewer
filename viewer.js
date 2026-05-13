@@ -387,11 +387,20 @@ function renderMarkdown(text) {
           return '<h' + level + ' id="' + id + '">' + text + '</h' + level + '>';
         },
         code: function(token) {
-          var code = token.text;
-          var language = token.lang;
+          // 兼容不同marked版本的参数格式
+          var code, language;
+          if (typeof token === 'string') {
+            code = arguments[0];
+            language = arguments[1];
+          } else if (token && typeof token === 'object') {
+            code = token.text || token.raw || '';
+            language = token.lang || token.language || '';
+          } else {
+            code = String(token || '');
+            language = '';
+          }
 
           if (language === 'mermaid') {
-            // 保存原始代码用于mermaid渲染
             var id = 'mermaid-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
             mermaidQueue.push({ id: id, code: code });
             return '<div class="mermaid" id="' + id + '"></div>';
@@ -426,58 +435,36 @@ var mermaidQueue = [];
 
 // 渲染Mermaid图表
 function renderMermaid() {
-  if (typeof mermaid === 'undefined') {
-    console.error('Mermaid库未加载');
-    renderMermaidFallback();
-    return;
-  }
-
   if (mermaidQueue.length === 0) return;
 
-  console.log('渲染Mermaid图表:', mermaidQueue.length, '个');
-
-  try {
-    mermaid.initialize({
-      startOnLoad: false,
-      theme: 'default',
-      securityLevel: 'loose'
-    });
-  } catch (err) {
-    console.error('Mermaid初始化失败:', err);
-  }
-
-  mermaidQueue.forEach(function(item, index) {
+  mermaidQueue.forEach(function(item) {
     var element = document.getElementById(item.id);
-    if (!element) {
-      console.error('找不到元素:', item.id);
+    if (!element) return;
+
+    var cleanCode = item.code.trim();
+    if (!cleanCode) {
+      element.innerHTML = '<pre class="mermaid-error">Mermaid代码为空</pre>';
       return;
     }
 
-    var cleanCode = item.code.trim();
-    var renderId = 'mermaid-svg-' + Date.now() + '-' + index;
-
-    // 尝试使用mermaidAPI
-    try {
-      if (mermaid.mermaidAPI && mermaid.mermaidAPI.render) {
-        mermaid.mermaidAPI.render(renderId, cleanCode, function(svgCode) {
-          element.innerHTML = svgCode;
-        });
-      } else {
-        mermaid.render(renderId, cleanCode).then(function(result) {
-          element.innerHTML = result.svg;
-        }).catch(function(err) {
-          console.error('Mermaid渲染失败:', err);
-          var errorMsg = err.message || err.str || '语法错误';
-          element.innerHTML = '<pre class="mermaid-error">Mermaid ' + errorMsg + ':\n' + cleanCode + '</pre>';
-        });
-      }
-    } catch (err) {
-      console.error('Mermaid渲染异常:', err);
-      element.innerHTML = '<pre class="mermaid-error">Mermaid渲染异常: ' + (err.message || err) + ':\n' + cleanCode + '</pre>';
-    }
+    // 直接显示mermaid源码，交给mermaid自动渲染
+    element.setAttribute('data-mermaid', cleanCode);
+    element.textContent = cleanCode;
   });
 
   mermaidQueue = [];
+
+  // 初始化并运行mermaid
+  try {
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose'
+    });
+    mermaid.run();
+  } catch (err) {
+    console.error('Mermaid运行失败:', err);
+  }
 }
 
 // Mermaid降级方案
