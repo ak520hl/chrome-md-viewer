@@ -47,6 +47,17 @@ function initUI() {
   // 打开上级目录按钮
   document.getElementById('open-parent').addEventListener('click', openParentDirectory);
 
+  // 刷新文件按钮
+  document.getElementById('refresh-btn').addEventListener('click', refreshCurrentFile);
+
+  // 快捷键刷新
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+      e.preventDefault();
+      refreshCurrentFile();
+    }
+  });
+
   // 返回顶部按钮
   initBackToTop();
 
@@ -385,7 +396,11 @@ function navigateToDirectory(file) {
 function openFile(file) {
   state.currentFile = file;
   document.getElementById('current-file-name').textContent = file.name;
+  loadFileContent(file);
+}
 
+// 加载文件内容
+function loadFileContent(file) {
   file.handle.getFile().then(function(fileData) {
     return fileData.text();
   }).then(function(text) {
@@ -394,6 +409,13 @@ function openFile(file) {
   }).catch(function(err) {
     showError('读取文件失败: ' + err.message);
   });
+}
+
+// 刷新当前文件
+function refreshCurrentFile() {
+  if (state.currentFile) {
+    loadFileContent(state.currentFile);
+  }
 }
 
 // 渲染Markdown
