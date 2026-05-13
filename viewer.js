@@ -41,8 +41,29 @@ function initUI() {
   // 打开上级目录按钮
   document.getElementById('open-parent').addEventListener('click', openParentDirectory);
 
+  // 返回顶部按钮
+  initBackToTop();
+
   // 初始化拖动调整大小
   initResize();
+}
+
+// 初始化返回顶部
+function initBackToTop() {
+  var backToTop = document.getElementById('back-to-top');
+  var content = document.getElementById('markdown-content');
+
+  content.addEventListener('scroll', function() {
+    if (content.scrollTop > 200) {
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  });
+
+  backToTop.addEventListener('click', function() {
+    content.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 }
 
 // 初始化拖动调整大小
