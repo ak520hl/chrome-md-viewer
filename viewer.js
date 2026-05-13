@@ -439,27 +439,44 @@ function renderMermaid() {
     mermaid.initialize({
       startOnLoad: false,
       theme: 'default',
-      securityLevel: 'loose'
+      securityLevel: 'loose',
+      logLevel: 0
     });
   } catch (err) {
     console.error('Mermaid初始化失败:', err);
   }
 
-  mermaidQueue.forEach(function(item) {
+  mermaidQueue.forEach(function(item, index) {
     var element = document.getElementById(item.id);
     if (!element) {
       console.error('找不到元素:', item.id);
       return;
     }
 
-    console.log('渲染Mermaid:', item.id, item.code.substring(0, 50) + '...');
+    console.log('渲染Mermaid:', item.id);
+    console.log('代码内容:', item.code);
 
-    mermaid.render(item.id + '-svg', item.code).then(function(output) {
+    // 清理代码
+    var cleanCode = item.code.trim();
+
+    // 使用mermaid.render API
+    var renderId = item.id + '-svg-' + index;
+
+    mermaid.render(renderId, cleanCode).then(function(result) {
       console.log('Mermaid渲染成功:', item.id);
-      element.innerHTML = output.svg;
+      element.innerHTML = result.svg;
     }).catch(function(err) {
       console.error('Mermaid渲染失败:', err);
-      element.innerHTML = '<pre class="mermaid-error">Mermaid语法错误: ' + err.message + '\n\n' + item.code + '</pre>';
+      // 尝试获取错误信息
+      var errorMsg = '未知错误';
+      if (err.message) {
+        errorMsg = err.message;
+      } else if (typeof err === 'string') {
+        errorMsg = err;
+      } else if (err.str) {
+        errorMsg = err.str;
+      }
+      element.innerHTML = '<pre class="mermaid-error">Mermaid语法错误:\n' + errorMsg + '\n\n代码:\n' + cleanCode + '</pre>';
     });
   });
 
