@@ -176,8 +176,24 @@ function loadDirectoryFiles(dir) {
   var files = [];
 
   readDirectory(dir, files, '').then(function() {
+    sortFiles(files);
     state.files = files;
     renderFileList(files);
+  });
+}
+
+// 排序文件列表：目录在前，文件在后，各自按名称排序
+function sortFiles(files) {
+  files.sort(function(a, b) {
+    if (a.type === 'directory' && b.type !== 'directory') return -1;
+    if (a.type !== 'directory' && b.type === 'directory') return 1;
+    return a.name.localeCompare(b.name, 'zh-CN');
+  });
+
+  files.forEach(function(file) {
+    if (file.children) {
+      sortFiles(file.children);
+    }
   });
 }
 
