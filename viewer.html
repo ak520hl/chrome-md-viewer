@@ -92,6 +92,27 @@
                 <button class="color-dot" data-color="orange" style="--dot-color: #ea580c" title="橙色"></button>
               </div>
             </div>
+            <div class="theme-panel-section">
+              <span class="theme-panel-label">排版</span>
+              <div class="typography-presets">
+                <button class="typo-btn active" data-typo="modern">现代</button>
+                <button class="typo-btn" data-typo="classic">书卷</button>
+                <button class="typo-btn" data-typo="technical">技术</button>
+                <button class="typo-btn" data-typo="comfortable">舒适</button>
+              </div>
+            </div>
+            <div class="theme-panel-section">
+              <span class="theme-panel-label">字号 <span id="font-size-value">15</span>px</span>
+              <input type="range" id="font-size-slider" class="theme-slider" min="12" max="24" value="15">
+            </div>
+            <div class="theme-panel-section">
+              <span class="theme-panel-label">行高 <span id="line-height-value">1.7</span></span>
+              <input type="range" id="line-height-slider" class="theme-slider" min="14" max="24" value="17" step="1">
+            </div>
+            <div class="theme-panel-section">
+              <span class="theme-panel-label">宽度 <span id="content-width-value">720</span>px</span>
+              <input type="range" id="content-width-slider" class="theme-slider" min="500" max="1000" value="720" step="20">
+            </div>
           </div>
         </div>
       </div>

@@ -27,6 +27,46 @@
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* 排版变量（默认值） */
+  --md-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --md-font-size: 15px;
+  --md-line-height: 1.7;
+  --md-max-width: 720px;
+}
+
+/* ===== 排版预设 ===== */
+
+/* 现代简约（默认） */
+[data-typography="modern"], :root {
+  --md-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --md-font-size: 15px;
+  --md-line-height: 1.7;
+  --md-max-width: 720px;
+}
+
+/* 经典书卷 */
+[data-typography="classic"] {
+  --md-font-family: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', Georgia, serif;
+  --md-font-size: 16px;
+  --md-line-height: 1.8;
+  --md-max-width: 680px;
+}
+
+/* 技术文档 */
+[data-typography="technical"] {
+  --md-font-family: 'IBM Plex Mono', 'Fira Code', monospace;
+  --md-font-size: 14px;
+  --md-line-height: 1.6;
+  --md-max-width: 860px;
+}
+
+/* 舒适阅读 */
+[data-typography="comfortable"] {
+  --md-font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --md-font-size: 18px;
+  --md-line-height: 2.0;
+  --md-max-width: 640px;
 }
 
 /* ===== 配色方案 ===== */
@@ -674,6 +714,62 @@ body {
   box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-text-tertiary);
 }
 
+.typography-presets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-xs);
+}
+
+.typo-btn {
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.typo-btn:hover {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
+.typo-btn.active {
+  background-color: var(--color-accent-subtle);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.theme-slider {
+  width: 100%;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: var(--color-border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.theme-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  cursor: pointer;
+  border: 2px solid var(--color-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
 #markdown-content {
   flex: 1;
   overflow-y: auto;
@@ -781,11 +877,12 @@ body {
 
 /* ===== Markdown 内容样式 ===== */
 .markdown-body {
-  font-family: var(--font-sans);
-  font-size: 15px;
-  line-height: 1.7;
+  font-family: var(--md-font-family);
+  font-size: var(--md-font-size);
+  line-height: var(--md-line-height);
   color: var(--color-text-primary);
-  max-width: 720px;
+  max-width: var(--md-max-width);
+  transition: font-family var(--transition-normal), font-size var(--transition-normal), line-height var(--transition-normal), max-width var(--transition-normal);
 }
 
 .markdown-body h1,

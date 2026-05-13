@@ -12,7 +12,11 @@ var state = {
   isSidebarCollapsed: false,
   activeTab: 'files',
   themeColor: 'purple',
-  themeMode: 'light'
+  themeMode: 'light',
+  typography: 'modern',
+  customFontSize: null,
+  customLineHeight: null,
+  customContentWidth: null
 };
 
 // 初始化
@@ -715,13 +719,17 @@ function saveState() {
     isSidebarCollapsed: state.isSidebarCollapsed,
     activeTab: state.activeTab,
     themeColor: state.themeColor,
-    themeMode: state.themeMode
+    themeMode: state.themeMode,
+    typography: state.typography,
+    customFontSize: state.customFontSize,
+    customLineHeight: state.customLineHeight,
+    customContentWidth: state.customContentWidth
   });
 }
 
 // 加载状态
 function loadState() {
-  chrome.storage.local.get(['isSidebarCollapsed', 'activeTab', 'themeColor', 'themeMode'], function(result) {
+  chrome.storage.local.get(['isSidebarCollapsed', 'activeTab', 'themeColor', 'themeMode', 'typography', 'customFontSize', 'customLineHeight', 'customContentWidth'], function(result) {
     if (result.isSidebarCollapsed !== undefined) {
       state.isSidebarCollapsed = result.isSidebarCollapsed;
       document.getElementById('sidebar').classList.toggle('collapsed', state.isSidebarCollapsed);
@@ -737,7 +745,20 @@ function loadState() {
     if (result.themeMode) {
       state.themeMode = result.themeMode;
     }
+    if (result.typography) {
+      state.typography = result.typography;
+    }
+    if (result.customFontSize) {
+      state.customFontSize = result.customFontSize;
+    }
+    if (result.customLineHeight) {
+      state.customLineHeight = result.customLineHeight;
+    }
+    if (result.customContentWidth) {
+      state.customContentWidth = result.customContentWidth;
+    }
     applyTheme();
+    applyTypography();
   });
 }
 
@@ -776,6 +797,47 @@ function initTheme() {
       saveState();
     });
   });
+
+  // 排版预设切换
+  document.querySelectorAll('.typo-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      state.typography = this.dataset.typo;
+      // 重置自定义值
+      state.customFontSize = null;
+      state.customLineHeight = null;
+      state.customContentWidth = null;
+      applyTypography();
+      updateSliders();
+      saveState();
+    });
+  });
+
+  // 字号滑块
+  var fontSizeSlider = document.getElementById('font-size-slider');
+  fontSizeSlider.addEventListener('input', function() {
+    state.customFontSize = parseInt(this.value);
+    applyTypography();
+    saveState();
+  });
+
+  // 行高滑块
+  var lineHeightSlider = document.getElementById('line-height-slider');
+  lineHeightSlider.addEventListener('input', function() {
+    state.customLineHeight = parseInt(this.value) / 10;
+    applyTypography();
+    saveState();
+  });
+
+  // 内容宽度滑块
+  var contentWidthSlider = document.getElementById('content-width-slider');
+  contentWidthSlider.addEventListener('input', function() {
+    state.customContentWidth = parseInt(this.value);
+    applyTypography();
+    saveState();
+  });
+
+  // 初始化滑块值
+  updateSliders();
 }
 
 // 应用主题
@@ -800,6 +862,59 @@ function applyTheme() {
   } else {
     toggleBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>';
   }
+}
+
+// 排版预设值
+var typoDefaults = {
+  modern: { fontSize: 15, lineHeight: 1.7, contentWidth: 720 },
+  classic: { fontSize: 16, lineHeight: 1.8, contentWidth: 680 },
+  technical: { fontSize: 14, lineHeight: 1.6, contentWidth: 860 },
+  comfortable: { fontSize: 18, lineHeight: 2.0, contentWidth: 640 }
+};
+
+// 应用排版
+function applyTypography() {
+  var root = document.documentElement;
+  root.setAttribute('data-typography', state.typography);
+
+  // 更新排版按钮状态
+  document.querySelectorAll('.typo-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.typo === state.typography);
+  });
+
+  // 应用自定义值（覆盖预设）
+  var style = document.documentElement.style;
+  if (state.customFontSize) {
+    style.setProperty('--md-font-size', state.customFontSize + 'px');
+  }
+  if (state.customLineHeight) {
+    style.setProperty('--md-line-height', state.customLineHeight);
+  }
+  if (state.customContentWidth) {
+    style.setProperty('--md-max-width', state.customContentWidth + 'px');
+  }
+
+  // 更新滑块显示值
+  var fs = state.customFontSize || typoDefaults[state.typography].fontSize;
+  var lh = state.customLineHeight || typoDefaults[state.typography].lineHeight;
+  var cw = state.customContentWidth || typoDefaults[state.typography].contentWidth;
+
+  document.getElementById('font-size-value').textContent = fs;
+  document.getElementById('line-height-value').textContent = lh.toFixed(1);
+  document.getElementById('content-width-value').textContent = cw;
+}
+
+// 更新滑块位置
+function updateSliders() {
+  var defaults = typoDefaults[state.typography] || typoDefaults.modern;
+
+  var fs = state.customFontSize || defaults.fontSize;
+  var lh = state.customLineHeight || defaults.lineHeight;
+  var cw = state.customContentWidth || defaults.contentWidth;
+
+  document.getElementById('font-size-slider').value = fs;
+  document.getElementById('line-height-slider').value = Math.round(lh * 10);
+  document.getElementById('content-width-slider').value = cw;
 }
 
 // 初始化滚动监听
