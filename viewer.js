@@ -426,29 +426,41 @@ var mermaidQueue = [];
 
 // 渲染Mermaid图表
 function renderMermaid() {
-  if (typeof mermaid === 'undefined' || mermaidQueue.length === 0) return;
+  if (typeof mermaid === 'undefined') {
+    console.error('Mermaid库未加载');
+    return;
+  }
 
-  mermaid.initialize({
-    startOnLoad: false,
-    theme: 'default',
-    securityLevel: 'loose'
-  });
+  if (mermaidQueue.length === 0) return;
+
+  console.log('渲染Mermaid图表:', mermaidQueue.length, '个');
+
+  try {
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'default',
+      securityLevel: 'loose'
+    });
+  } catch (err) {
+    console.error('Mermaid初始化失败:', err);
+  }
 
   mermaidQueue.forEach(function(item) {
     var element = document.getElementById(item.id);
-    if (element) {
-      try {
-        mermaid.render(item.id + '-svg', item.code).then(function(result) {
-          element.innerHTML = result.svg;
-        }).catch(function(err) {
-          console.error('Mermaid渲染失败:', err);
-          element.innerHTML = '<pre class="mermaid-error">' + item.code + '</pre>';
-        });
-      } catch (err) {
-        console.error('Mermaid渲染失败:', err);
-        element.innerHTML = '<pre class="mermaid-error">' + item.code + '</pre>';
-      }
+    if (!element) {
+      console.error('找不到元素:', item.id);
+      return;
     }
+
+    console.log('渲染Mermaid:', item.id, item.code.substring(0, 50) + '...');
+
+    mermaid.render(item.id + '-svg', item.code).then(function(output) {
+      console.log('Mermaid渲染成功:', item.id);
+      element.innerHTML = output.svg;
+    }).catch(function(err) {
+      console.error('Mermaid渲染失败:', err);
+      element.innerHTML = '<pre class="mermaid-error">Mermaid语法错误: ' + err.message + '\n\n' + item.code + '</pre>';
+    });
   });
 
   mermaidQueue = [];
