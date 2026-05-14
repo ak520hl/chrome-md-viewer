@@ -63,11 +63,18 @@
       <div class="content-header">
         <h1 id="current-file-name">未选择文件</h1>
         <div class="theme-switcher">
-          <button id="refresh-btn" class="toggle-btn" title="刷新文件（Ctrl+R）">
+          <button id="refresh-btn" class="toggle-btn" title="刷新文件列表（Ctrl+R）">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M13.5 6.5A5.5 5.5 0 107 12.5"/>
               <path d="M13.5 2v4.5H9"/>
             </svg>
+          </button>
+          <button id="refresh-file-btn" class="toggle-btn refresh-file-btn" title="刷新当前文件" style="display:none;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M13.5 6.5A5.5 5.5 0 107 12.5"/>
+              <path d="M13.5 2v4.5H9"/>
+            </svg>
+            <span>刷新</span>
           </button>
           <button id="theme-toggle-btn" class="toggle-btn" title="切换主题">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">

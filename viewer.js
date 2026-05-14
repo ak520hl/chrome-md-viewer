@@ -50,6 +50,9 @@ function initUI() {
   // 刷新文件列表按钮
   document.getElementById('refresh-btn').addEventListener('click', refreshFileList);
 
+  // 刷新当前文件按钮
+  document.getElementById('refresh-file-btn').addEventListener('click', refreshCurrentFile);
+
   // 快捷键刷新
   document.addEventListener('keydown', function(e) {
     if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
@@ -396,6 +399,7 @@ function navigateToDirectory(file) {
 function openFile(file) {
   state.currentFile = file;
   document.getElementById('current-file-name').textContent = file.name;
+  document.getElementById('refresh-file-btn').style.display = '';
   loadFileContent(file);
 }
 
