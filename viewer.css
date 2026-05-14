@@ -633,29 +633,6 @@ body {
   animation: spin 0.5s ease;
 }
 
-.refresh-file-btn {
-  display: flex !important;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  background-color: var(--color-accent);
-  color: white;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 500;
-  font-family: var(--font-sans);
-  transition: all var(--transition-fast);
-}
-
-.refresh-file-btn:hover {
-  background-color: var(--color-accent-hover);
-  box-shadow: var(--shadow-hover);
-}
-
-.refresh-file-btn:active {
-  transform: scale(0.96);
-}
-
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
