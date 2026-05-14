@@ -47,8 +47,8 @@ function initUI() {
   // 打开上级目录按钮
   document.getElementById('open-parent').addEventListener('click', openParentDirectory);
 
-  // 刷新文件按钮
-  document.getElementById('refresh-btn').addEventListener('click', refreshCurrentFile);
+  // 刷新文件列表按钮
+  document.getElementById('refresh-btn').addEventListener('click', refreshFileList);
 
   // 快捷键刷新
   document.addEventListener('keydown', function(e) {
@@ -415,6 +415,13 @@ function loadFileContent(file) {
 function refreshCurrentFile() {
   if (state.currentFile) {
     loadFileContent(state.currentFile);
+  }
+}
+
+// 刷新文件列表
+function refreshFileList() {
+  if (state.currentDirectory) {
+    loadDirectoryFiles(state.currentDirectory);
   }
 }
 
