@@ -46,6 +46,12 @@
         </div>
       </div>
       <div class="sidebar-footer">
+        <button id="refresh-list-btn" class="toggle-btn sidebar-footer-btn" title="刷新文件列表">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M11.5 5.5A5 5 0 104 10.5"/>
+            <path d="M11.5 1.5v4h-4"/>
+          </svg>
+        </button>
         <button id="open-directory" class="primary-btn">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M1 3.5h12M1 3.5v8.5h12V3.5M4.5 3.5V2h5v1.5"/>
@@ -63,12 +69,6 @@
       <div class="content-header">
         <h1 id="current-file-name">未选择文件</h1>
         <div class="theme-switcher">
-          <button id="refresh-btn" class="toggle-btn" title="刷新文件列表（Ctrl+R）">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M13.5 6.5A5.5 5.5 0 107 12.5"/>
-              <path d="M13.5 2v4.5H9"/>
-            </svg>
-          </button>
           <button id="refresh-file-btn" class="toggle-btn refresh-file-btn" title="刷新当前文件" style="display:none;">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
               <path d="M13.5 6.5A5.5 5.5 0 107 12.5"/>

@@ -47,10 +47,10 @@ function initUI() {
   // 打开上级目录按钮
   document.getElementById('open-parent').addEventListener('click', openParentDirectory);
 
-  // 刷新文件列表按钮
-  document.getElementById('refresh-btn').addEventListener('click', refreshFileList);
+  // 刷新文件列表按钮（侧边栏底部）
+  document.getElementById('refresh-list-btn').addEventListener('click', refreshFileList);
 
-  // 刷新当前文件按钮
+  // 刷新当前文件按钮（内容区标题栏）
   document.getElementById('refresh-file-btn').addEventListener('click', refreshCurrentFile);
 
   // 快捷键刷新
